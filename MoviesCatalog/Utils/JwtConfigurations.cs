@@ -9,9 +9,7 @@ namespace MoviesCatalog.Utils
         public const string Audience = "JwtClient";
         private const string Key = "FortniteHambugerSussyBalls445";
         public const int Lifetime = 30;
-        public static SymmetricSecurityKey GetSymmetricSecurityKey()
-        {
-            return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Key));
-        }
+        public static SymmetricSecurityKey GetSymmetricSecurityKey() =>
+            new(Encoding.ASCII.GetBytes(Key));
     }
 }
