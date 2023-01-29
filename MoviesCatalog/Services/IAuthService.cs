@@ -5,8 +5,8 @@ namespace MoviesCatalog.Services
 {
     public interface IAuthService
     {
-        Task<bool> Register(UserRegistrationDto user);
-        Task<IActionResult?> Token(UserLoginCredentials credentials);
+        Task Register(UserRegistrationDto user);
+        Task<JsonResult> Token(UserLoginCredentials credentials);
         Task Logout(string request);
     }
 }
