@@ -9,7 +9,7 @@ namespace MoviesCatalog.Controllers
         [HttpPost]
         public string Register()
         {
-            return "Registration succeded";
+            return "Reg";
         }
         [HttpPost]
         public string Login()
