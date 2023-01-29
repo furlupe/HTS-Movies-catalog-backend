@@ -79,15 +79,16 @@ namespace MoviesCatalog.Services
         private async Task<ClaimsIdentity?> GetIdentity(string email, string password)
         {
             var hashedPassword = EncodePassword(password);
-            var exists = await _context.Users.Where(user => user.Email == email && user.Password == hashedPassword).ToListAsync();
-            if (exists.IsNullOrEmpty())
+            var user = await _context.Users.Where(user => user.Email == email && user.Password == hashedPassword).ToListAsync();
+            if (user.IsNullOrEmpty())
             {
                 return null;
             }
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, email)
+                new Claim("email", email),
+                new Claim("id", user[0].Id.ToString())
             };
 
             return new ClaimsIdentity(claims, "Token");
