@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MoviesCatalog.Exceptions;
 using MoviesCatalog.Models;
 using MoviesCatalog.Models.DTO;
 
@@ -13,7 +14,7 @@ namespace MoviesCatalog.Services
         }
         public async Task<UserProfileDto> GetProfile(Guid id)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.Id == id);
+            var user = await _context.Users.SingleAsync(u => u.Id == id);
             return new UserProfileDto
             {
                 Id = user.Id,
@@ -26,9 +27,24 @@ namespace MoviesCatalog.Services
             };
         }
 
-        public Task UpdateProfile(UserProfileDto profile)
+        public async Task UpdateProfile(UserProfileDto profile, Guid id)
         {
-            throw new NotImplementedException();
+            if (profile.Id != id)
+            {
+                throw new ForbiddenException();
+            } 
+            else if(await _context.Users.AnyAsync(user => user.Email == profile.Email && user.Id != profile.Id))
+            {
+                throw new BadRequestException("Email is already taken");
+            } 
+            else if (await _context.Users.AnyAsync(user => user.Username == profile.Username && user.Id != profile.Id))
+            {
+                throw new BadRequestException("Username is already taken");
+            }
+
+            _context.Entry(await _context.Users.SingleAsync(x => x.Id == profile.Id))
+                .CurrentValues.SetValues(profile);
+            await _context.SaveChangesAsync();
         }
     }
 }

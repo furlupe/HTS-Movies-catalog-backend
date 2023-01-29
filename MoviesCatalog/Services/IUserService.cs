@@ -5,6 +5,6 @@ namespace MoviesCatalog.Services
     public interface IUserService
     {
         Task<UserProfileDto> GetProfile(Guid id);
-        Task UpdateProfile(UserProfileDto profile);
+        Task UpdateProfile(UserProfileDto profile, Guid id);
     }
 }

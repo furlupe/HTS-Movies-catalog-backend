@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MoviesCatalog.Exceptions;
 using MoviesCatalog.Models.DTO;
 using MoviesCatalog.Services;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,26 +18,51 @@ namespace MoviesCatalog.Controllers
             _userService = userService;
         }
 
-
+        /// <summary>
+        /// Returns user's info
+        /// </summary>
+        /// <response code="401">Unauthorized</response>
         [HttpGet]
         [Authorize]
         public async Task<UserProfileDto> Profile()
         {
+            return await _userService.GetProfile(AccessId());
+        }
+
+        /// <summary>
+        /// Changes user's info
+        /// </summary>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="403">Forbidden</response>
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> Profile(UserProfileDto profile)
+        {
+            try
+            {
+                await _userService.UpdateProfile(profile, AccessId());
+            } 
+            catch(BadRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch(ForbiddenException)
+            {
+                return Forbid();
+            }
+
+            return Ok();
+        }
+
+        private Guid AccessId()
+        {
             var header = AuthenticationHeaderValue.Parse(Request.Headers.Authorization);
-            var id = new Guid(
-                    new JwtSecurityTokenHandler()
+            return new Guid(
+                new JwtSecurityTokenHandler()
                     .ReadJwtToken(header.Parameter)
                     .Claims.First(claim => claim.Type == "id").Value
                 );
-
-            return await _userService.GetProfile(id);
-        }
-
-        [HttpPut]
-        [Authorize]
-        public async Task Profile(UserProfileDto profile)
-        {
-            throw new NotImplementedException();
         }
     }
 }

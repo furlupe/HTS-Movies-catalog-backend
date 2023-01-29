@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using MoviesCatalog.Models;
 using MoviesCatalog.Services;
 using MoviesCatalog.Utils;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +39,8 @@ builder.Services.AddSwaggerGen(option =>
             new string[] { }
         }
     });
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    option.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
