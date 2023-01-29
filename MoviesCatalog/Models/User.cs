@@ -1,5 +1,4 @@
 ﻿using MoviesCatalog.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace MoviesCatalog.Models
 {

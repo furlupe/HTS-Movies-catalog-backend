@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MoviesCatalog.Models.DTO;
+using MoviesCatalog.Services;
 
 namespace MoviesCatalog.Controllers
 {
@@ -6,20 +9,38 @@ namespace MoviesCatalog.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        [HttpPost]
-        public string Register()
+        private readonly IAuthService _authService;
+        public AuthController(IAuthService authService)
         {
-            return "Reg";
+            _authService = authService;
         }
-        [HttpPost]
-        public string Login()
+
+        [HttpPost("register")]
+        public async Task<IActionResult?> Register(UserRegistrationDto user)
         {
-            return "Logged in";
+            if (!await _authService.Register(user))
+            {
+                return BadRequest(new { error = "User already exists" });
+            }
+            return await _authService.Token(new UserLoginCredentials { Email = user.Email, Password = user.Password });
         }
-        [HttpPost]
-        public string Logout()
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Token(UserLoginCredentials credentials)
         {
-            return "Logged out";
+            var token = await _authService.Token(credentials);
+
+            if (token is null)
+            {
+                return BadRequest(new { error = "Invalid username or password" });
+            }
+
+            return token;
         }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task Logout() => 
+            await _authService.Logout(Request.Headers.Authorization);
     }
 }
