@@ -11,7 +11,7 @@ namespace MoviesCatalog.Models.DTO
         public string Username { get; set; }
         [EmailAddress]
         public string Email { get; set; }
-        public string Avatar { get; set; }
+        public string? Avatar { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

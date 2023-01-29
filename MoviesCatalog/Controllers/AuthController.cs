@@ -6,17 +6,17 @@ namespace MoviesCatalog.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        [HttpPost]
+        [HttpPost("register")]
         public string Register()
         {
             return "Registration success";
         }
-        [HttpPost]
+        [HttpPost("login")]
         public string Login()
         {
             return "Logged in";
         }
-        [HttpPost]
+        [HttpPost("logout")]
         public string Logout()
         {
             return "Logged out";
