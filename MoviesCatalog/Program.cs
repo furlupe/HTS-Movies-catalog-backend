@@ -41,9 +41,17 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddTransient<IAuthorizationHandler, ExtendedAuthRequirementHandler>();
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(
+        "NotBlacklisted",
+        policy => policy.Requirements.Add(new ExtendedAuthRequirement()));
+});
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

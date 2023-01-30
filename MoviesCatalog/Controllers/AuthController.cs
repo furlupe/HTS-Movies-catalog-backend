@@ -43,7 +43,7 @@ namespace MoviesCatalog.Controllers
             }
         }
 
-        [Authorize("NotBlacklisted")]
+        [Authorize(Policy = "NotBlacklisted")]
         [HttpPost("logout")]
         public async Task Logout() => 
             await _authService.Logout(Request.Headers.Authorization);

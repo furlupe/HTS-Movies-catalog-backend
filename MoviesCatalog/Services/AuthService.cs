@@ -50,7 +50,7 @@ namespace MoviesCatalog.Services
         {
             await _context.Blacklist.AddAsync(new BlacklistedToken
             {
-                Value = token.Split(" ")[1]
+                Value = token
             });
             await _context.SaveChangesAsync();
         }
