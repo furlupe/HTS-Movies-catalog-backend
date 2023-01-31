@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using MoviesCatalog.Models;
 using MoviesCatalog.Services;
 using MoviesCatalog.Utils;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,8 @@ builder.Services.AddSwaggerGen(option =>
             new string[] { }
         }
     });
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    option.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 builder.Services.AddHttpContextAccessor();
@@ -51,6 +54,7 @@ builder.Services.AddAuthorization(options =>
         "NotBlacklisted",
         policy => policy.Requirements.Add(new ExtendedAuthRequirement()));
 });
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
