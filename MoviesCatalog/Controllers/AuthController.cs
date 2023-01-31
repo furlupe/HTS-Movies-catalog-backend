@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MoviesCatalog.Exceptions;
 using MoviesCatalog.Models.DTO;
 using MoviesCatalog.Services;
 
@@ -18,27 +19,31 @@ namespace MoviesCatalog.Controllers
         [HttpPost("register")]
         public async Task<IActionResult?> Register(UserRegistrationDto user)
         {
-            if (!await _authService.Register(user))
+            try
             {
-                return BadRequest(new { error = "User already exists" });
+                await _authService.Register(user);
+                return await _authService.Token(new UserLoginCredentials { Email = user.Email, Password = user.Password });
             }
-            return await _authService.Token(new UserLoginCredentials { Email = user.Email, Password = user.Password });
+            catch(BadRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Token(UserLoginCredentials credentials)
         {
-            var token = await _authService.Token(credentials);
-
-            if (token is null)
+            try
             {
-                return BadRequest(new { error = "Invalid username or password" });
+                return await _authService.Token(credentials);
             }
-
-            return token;
+            catch (BadRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
-        [Authorize]
+        [Authorize(Policy = "NotBlacklisted")]
         [HttpPost("logout")]
         public async Task Logout() => 
             await _authService.Logout(Request.Headers.Authorization);

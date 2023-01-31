@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MoviesCatalog.Exceptions;
 using MoviesCatalog.Models;
 using MoviesCatalog.Models.DTO;
 using MoviesCatalog.Utils;
@@ -19,12 +20,12 @@ namespace MoviesCatalog.Services
             _context = context;
         }
 
-        public async Task<IActionResult?> Token(UserLoginCredentials credentials)
+        public async Task<JsonResult> Token(UserLoginCredentials credentials)
         {
             ClaimsIdentity? identity = await GetIdentity(credentials.Email, credentials.Password);
             if (identity is null)
             {
-                return null;
+                throw new BadRequestException("Invalid Email or password");
             }
 
             var now = DateTime.UtcNow;
@@ -35,11 +36,11 @@ namespace MoviesCatalog.Services
                 claims: identity.Claims,
                 expires: now.AddMinutes(JwtConfigurations.Lifetime),
                 signingCredentials: new SigningCredentials(JwtConfigurations.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var enctoken = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
             var response = new
             {
-                token = encodedJwt
+                token = enctoken
             };
 
             return new JsonResult(response);
@@ -54,12 +55,15 @@ namespace MoviesCatalog.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> Register(UserRegistrationDto user)
+        public async Task Register(UserRegistrationDto user)
         {
-            var existingUser = await _context.Users.Where(u => u.Username == user.Username || u.Email == user.Email).ToListAsync();
-            if (existingUser.Count > 0)
+            if (await _context.Users.AnyAsync(x => x.Email == user.Email))
             {
-                return false;
+                throw new BadRequestException("Email is already taken");
+            } 
+            else if (await _context.Users.AnyAsync(x => x.Email == user.Username))
+            {
+                throw new BadRequestException("Username is already taken");
             }
 
             await _context.Users.AddAsync(new User
@@ -72,8 +76,6 @@ namespace MoviesCatalog.Services
                 Gender = user.Gender
             });
             await _context.SaveChangesAsync();
-
-            return true;
         }
 
         private async Task<ClaimsIdentity?> GetIdentity(string email, string password)
@@ -87,7 +89,7 @@ namespace MoviesCatalog.Services
 
             var claims = new List<Claim>
             {
-                new Claim("email", email),
+                new Claim(ClaimsIdentity.DefaultNameClaimType, email),
                 new Claim("id", user[0].Id.ToString())
             };
 
