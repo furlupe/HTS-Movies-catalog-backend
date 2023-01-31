@@ -23,7 +23,7 @@ namespace MoviesCatalog.Controllers
         /// </summary>
         /// <response code="401">Unauthorized</response>
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = "NotBlacklisted")]
         public async Task<UserProfileDto> Profile()
         {
             return await _userService.GetProfile(AccessId());
@@ -36,7 +36,7 @@ namespace MoviesCatalog.Controllers
         /// <response code="400">Bad request</response>
         /// <response code="403">Forbidden</response>
         [HttpPut]
-        [Authorize]
+        [Authorize(Policy = "NotBlacklisted")]
         public async Task<IActionResult> Profile(UserProfileDto profile)
         {
             try
