@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoviesCatalog.Models;
 
@@ -11,9 +12,11 @@ using MoviesCatalog.Models;
 namespace MoviesCatalog.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20230131095522_AdjustRelations")]
+    partial class AdjustRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,25 +42,13 @@ namespace MoviesCatalog.Migrations
                     b.ToTable("Blacklist");
                 });
 
-            modelBuilder.Entity("MoviesCatalog.Models.FavoriteMovie", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("MovieId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("UserId", "MovieId");
-
-                    b.HasIndex("MovieId");
-
-                    b.ToTable("Favorites");
-                });
-
             modelBuilder.Entity("MoviesCatalog.Models.Genre", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("MovieId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -65,6 +56,8 @@ namespace MoviesCatalog.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
 
                     b.ToTable("Genres");
                 });
@@ -114,21 +107,6 @@ namespace MoviesCatalog.Migrations
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("MoviesCatalog.Models.MovieGenre", b =>
-                {
-                    b.Property<Guid>("MovieId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("GenreId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("MovieId", "GenreId");
-
-                    b.HasIndex("GenreId");
-
-                    b.ToTable("MovieGenres");
-                });
-
             modelBuilder.Entity("MoviesCatalog.Models.Review", b =>
                 {
                     b.Property<Guid>("Id")
@@ -151,7 +129,7 @@ namespace MoviesCatalog.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -199,42 +177,11 @@ namespace MoviesCatalog.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("MoviesCatalog.Models.FavoriteMovie", b =>
+            modelBuilder.Entity("MoviesCatalog.Models.Genre", b =>
                 {
-                    b.HasOne("MoviesCatalog.Models.Movie", "Movie")
-                        .WithMany()
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MoviesCatalog.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Movie");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MoviesCatalog.Models.MovieGenre", b =>
-                {
-                    b.HasOne("MoviesCatalog.Models.Genre", "Genre")
-                        .WithMany()
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MoviesCatalog.Models.Movie", "Movie")
-                        .WithMany()
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Genre");
-
-                    b.Navigation("Movie");
+                    b.HasOne("MoviesCatalog.Models.Movie", null)
+                        .WithMany("Genres")
+                        .HasForeignKey("MovieId");
                 });
 
             modelBuilder.Entity("MoviesCatalog.Models.Review", b =>
@@ -245,18 +192,21 @@ namespace MoviesCatalog.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MoviesCatalog.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("MoviesCatalog.Models.User", null)
+                        .WithMany("Reviews")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Movie");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MoviesCatalog.Models.Movie", b =>
+                {
+                    b.Navigation("Genres");
+
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("MoviesCatalog.Models.User", b =>
                 {
                     b.Navigation("Reviews");
                 });

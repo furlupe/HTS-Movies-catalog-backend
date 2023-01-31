@@ -47,6 +47,8 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddTransient<IAuthorizationHandler, ExtendedAuthRequirementHandler>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddTransient<IMovieService, MovieService>();
 
 builder.Services.AddAuthorization(options =>
 {
@@ -54,7 +56,6 @@ builder.Services.AddAuthorization(options =>
         "NotBlacklisted",
         policy => policy.Requirements.Add(new ExtendedAuthRequirement()));
 });
-builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
