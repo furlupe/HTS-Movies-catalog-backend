@@ -1,9 +1,11 @@
 ﻿using MoviesCatalog.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace MoviesCatalog.Models
 {
     public class User
     {
+        [Key]
         public Guid Id { get; set; }
         public string Name { get; set; }
         public DateTime Birthdate { get; set; }
@@ -12,5 +14,7 @@ namespace MoviesCatalog.Models
         public string Password { get; set; }
         public Gender Gender { get; set; }
         public string? Avatar { get; set; }
+        public IEnumerable<Review> Reviews { get; set; }
+        public IEnumerable<Movie> Favorites { get; set; }
     }
 }
