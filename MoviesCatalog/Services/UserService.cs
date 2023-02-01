@@ -22,7 +22,7 @@ namespace MoviesCatalog.Services
                 Email = user.Email,
                 Avatar = user.Avatar,
                 Name = user.Name,
-                Birthdate= user.Birthdate,
+                Birthdate = user.Birthdate,
                 Gender = user.Gender
             };
         }
@@ -32,11 +32,11 @@ namespace MoviesCatalog.Services
             if (profile.Id != id)
             {
                 throw new ForbiddenException();
-            } 
-            else if(await _context.Users.AnyAsync(user => user.Email == profile.Email && user.Id != profile.Id))
+            }
+            else if (await _context.Users.AnyAsync(user => user.Email == profile.Email && user.Id != profile.Id))
             {
                 throw new BadRequestException("Email is already taken");
-            } 
+            }
             else if (await _context.Users.AnyAsync(user => user.Username == profile.Username && user.Id != profile.Id))
             {
                 throw new BadRequestException("Username is already taken");

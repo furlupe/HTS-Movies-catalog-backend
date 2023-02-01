@@ -60,7 +60,7 @@ namespace MoviesCatalog.Services
             if (await _context.Users.AnyAsync(x => x.Email == user.Email))
             {
                 throw new BadRequestException("Email is already taken");
-            } 
+            }
             else if (await _context.Users.AnyAsync(x => x.Email == user.Username))
             {
                 throw new BadRequestException("Username is already taken");

@@ -24,7 +24,7 @@ namespace MoviesCatalog.Controllers
                 await _authService.Register(user);
                 return await _authService.Token(new UserLoginCredentials { Email = user.Email, Password = user.Password });
             }
-            catch(BadRequestException e)
+            catch (BadRequestException e)
             {
                 return BadRequest(e.Message);
             }
@@ -45,7 +45,7 @@ namespace MoviesCatalog.Controllers
 
         [Authorize(Policy = "NotBlacklisted")]
         [HttpPost("logout")]
-        public async Task Logout() => 
+        public async Task Logout() =>
             await _authService.Logout(Request.Headers.Authorization);
     }
 }

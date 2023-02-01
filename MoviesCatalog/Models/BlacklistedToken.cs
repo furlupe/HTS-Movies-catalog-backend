@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-
-namespace MoviesCatalog.Models
+﻿namespace MoviesCatalog.Models
 {
     public class BlacklistedToken
     {
