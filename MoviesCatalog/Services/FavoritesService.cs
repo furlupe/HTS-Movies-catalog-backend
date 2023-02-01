@@ -11,15 +11,25 @@ namespace MoviesCatalog.Services
         {
             _context = context;
         }
-        public Task AddFavoriteMovie(Guid userId)
+        public async Task AddFavoriteMovie(Guid userId, Guid movieId)
         {
-            throw new NotImplementedException();
+            var user = await _context.Users
+                .Include(u => u.Favorites)
+                .SingleOrDefaultAsync(u => u.Id == userId);
+
+            var movie = await _context.Movies
+                .SingleOrDefaultAsync(m => m.Id == movieId);
+
+            user.Favorites.Add(movie);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<FavoriteMoviesDto> GetFavorites(Guid userId)
         {
             var movies = new List<MovieShortDto>();
-            var selectedMovies = await _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
+            var selectedMovies = await _context.Users
+                .Include(u => u.Favorites)
+                .SingleOrDefaultAsync(u => u.Id == userId);
 
             if(selectedMovies.Favorites is null) {
                 return new FavoriteMoviesDto() 
@@ -31,13 +41,16 @@ namespace MoviesCatalog.Services
             foreach(var movie in selectedMovies.Favorites)
             {
                 var genres = new List<GenreDto>();
-                foreach(var genre in movie.Genres)
+                if(movie.Genres is not null)
                 {
-                    genres.Add(new GenreDto()
+                    foreach (var genre in movie.Genres)
                     {
-                        Id = genre.Id,
-                        Name = genre.Name
-                    });
+                        genres.Add(new GenreDto()
+                        {
+                            Id = genre.Id,
+                            Name = genre.Name
+                        });
+                    }
                 }
 
                 var reviews = new List<ReviewShortDto>();
@@ -71,7 +84,7 @@ namespace MoviesCatalog.Services
             };
         }
 
-        public Task RemoveFavoriteMovie(Guid userId)
+        public Task RemoveFavoriteMovie(Guid userId, Guid movieId)
         {
             throw new NotImplementedException();
         }
