@@ -11,8 +11,9 @@ namespace MoviesCatalog.Utils
         private readonly Context _dbContext;
         private readonly IHttpContextAccessor _httpContext;
 
-        public ExtendedAuthRequirementHandler(Context dbContext, IHttpContextAccessor httpContext) { 
-            _dbContext = dbContext; 
+        public ExtendedAuthRequirementHandler(Context dbContext, IHttpContextAccessor httpContext)
+        {
+            _dbContext = dbContext;
             _httpContext = httpContext;
         }
 
@@ -22,7 +23,7 @@ namespace MoviesCatalog.Utils
 
             var token = _httpContext.HttpContext.Request.Headers.Authorization.ToString();
 
-            if (! await _dbContext.Blacklist.AnyAsync(t => t.Value == token))
+            if (!await _dbContext.Blacklist.AnyAsync(t => t.Value == token))
             {
                 context.Succeed(requirement);
                 return;

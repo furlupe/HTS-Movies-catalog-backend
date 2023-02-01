@@ -27,11 +27,12 @@ namespace MoviesCatalog.Services
                 .Include(m => m.Reviews).ToListAsync();
 
             var movies = new List<MovieShortDto>();
-            foreach(var movie in selectedMovies)
+            foreach (var movie in selectedMovies)
             {
 
                 var genres = new List<GenreDto>();
-                foreach(var genre in movie.Genres) {
+                foreach (var genre in movie.Genres)
+                {
                     genres.Add(new GenreDto()
                     {
                         Id = genre.Id,
@@ -40,7 +41,7 @@ namespace MoviesCatalog.Services
                 }
 
                 var reviews = new List<ReviewShortDto>();
-                if(movie.Reviews is not null)
+                if (movie.Reviews is not null)
                 {
                     foreach (var review in movie.Reviews)
                     {
@@ -86,13 +87,13 @@ namespace MoviesCatalog.Services
                     .ThenInclude(r => r.User)
                 .SingleOrDefaultAsync(m => m.Id == id);
 
-            if(movie is null)
+            if (movie is null)
             {
                 throw new BadRequestException($"Movie w/ id = {id} does not exist!");
             }
 
             var genres = new List<GenreDto>();
-            foreach(var genre in movie.Genres)
+            foreach (var genre in movie.Genres)
             {
                 genres.Add(new GenreDto()
                 {
@@ -102,9 +103,9 @@ namespace MoviesCatalog.Services
             }
 
             var reviews = new List<ReviewDto>();
-            if(movie.Reviews is not null)
+            if (movie.Reviews is not null)
             {
-                foreach(var review in movie.Reviews)
+                foreach (var review in movie.Reviews)
                 {
                     reviews.Add(new ReviewDto()
                     {

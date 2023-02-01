@@ -42,12 +42,12 @@ namespace MoviesCatalog.Controllers
             try
             {
                 await _userService.UpdateProfile(profile, AccessId());
-            } 
-            catch(BadRequestException e)
+            }
+            catch (BadRequestException e)
             {
                 return BadRequest(e.Message);
             }
-            catch(ForbiddenException)
+            catch (ForbiddenException)
             {
                 return Forbid();
             }

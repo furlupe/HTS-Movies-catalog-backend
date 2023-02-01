@@ -15,7 +15,7 @@ namespace MoviesCatalog.Models
         public string? Tagline { get; set; }
         public string? Director { get; set; }
         public int? Budget { get; set; }
-        public int? Fees { get; set;}
+        public int? Fees { get; set; }
         public int AgeLimit { get; set; }
         public virtual IEnumerable<Review>? Reviews { get; set; }
         public virtual IEnumerable<Genre> Genres { get; set; }
