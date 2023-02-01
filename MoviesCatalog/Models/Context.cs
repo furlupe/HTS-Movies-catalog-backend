@@ -9,8 +9,6 @@ namespace MoviesCatalog.Models
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<FavoriteMovie> Favorites { get; set; }
-        public DbSet<MovieGenre> MovieGenres { get; set; }
         public Context(DbContextOptions<Context> options) : base(options)
         {
             Database.EnsureCreated();

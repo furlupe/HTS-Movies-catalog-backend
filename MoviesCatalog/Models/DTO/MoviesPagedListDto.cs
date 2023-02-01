@@ -2,7 +2,7 @@
 {
     public class MoviesPagedListDto
     {
-        public List<MovieShortDto> Movies { get; set; }
+        public IEnumerable<MovieShortDto> Movies { get; set; }
         public PageDto PageInfo { get; set; }
     }
 }

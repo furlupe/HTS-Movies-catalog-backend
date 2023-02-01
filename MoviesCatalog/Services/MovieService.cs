@@ -15,34 +15,27 @@ namespace MoviesCatalog.Services
         }
         public async Task<MoviesPagedListDto> GetMoviesPage(int page)
         {
-            if (page < 1)
-            {
-                throw new BadRequestException($"Wrong page No.");
-            }
-
             var pageCount = (_context.Movies.Count() / PAGE_SIZE) + Convert.ToInt32(_context.Movies.Count() % PAGE_SIZE > 0);
             if (page > pageCount)
             {
-                throw new BadRequestException($"Page No.{page} is greater than amount of pages");
+                throw new BadRequestException($"Page No. {page} is greater than amount of pages");
             }
 
             var selectedMovies = await _context.Movies
                 .Skip((page - 1) * PAGE_SIZE)
-                .Take(PAGE_SIZE).Include(m => m.Reviews).ToListAsync();
+                .Take(PAGE_SIZE)
+                .Include(m => m.Reviews).ToListAsync();
 
             var movies = new List<MovieShortDto>();
             foreach(var movie in selectedMovies)
             {
-                var selectedGenres = await _context.MovieGenres
-                    .Where(g => g.MovieId == movie.Id)
-                    .Include(g => g.Genre).ToListAsync();
 
                 var genres = new List<GenreDto>();
-                foreach(var genre in selectedGenres) {
+                foreach(var genre in movie.Genres) {
                     genres.Add(new GenreDto()
                     {
-                        Id = genre.GenreId,
-                        Name = genre.Genre.Name
+                        Id = genre.Id,
+                        Name = genre.Name
                     });
                 }
 
@@ -82,6 +75,70 @@ namespace MoviesCatalog.Services
             {
                 Movies = movies,
                 PageInfo = pageInfo
+            };
+        }
+
+        public async Task<MovieDetailsDto> GetMovieDetails(Guid id)
+        {
+            var movie = await _context.Movies
+                .Include(m => m.Genres)
+                .Include(m => m.Reviews)
+                    .ThenInclude(r => r.User)
+                .SingleOrDefaultAsync(m => m.Id == id);
+
+            if(movie is null)
+            {
+                throw new BadRequestException($"Movie w/ id = {id} does not exist!");
+            }
+
+            var genres = new List<GenreDto>();
+            foreach(var genre in movie.Genres)
+            {
+                genres.Add(new GenreDto()
+                {
+                    Id = genre.Id,
+                    Name = genre.Name
+                });
+            }
+
+            var reviews = new List<ReviewDto>();
+            if(movie.Reviews is not null)
+            {
+                foreach(var review in movie.Reviews)
+                {
+                    reviews.Add(new ReviewDto()
+                    {
+                        Id = review.Id,
+                        Rating = review.Rating,
+                        Text = review.Text,
+                        IsAnonymous = review.IsAnonymous,
+                        CreationDateTime = review.CreationDateTime,
+                        Author = new UserShortDto()
+                        {
+                            Id = review.UserId,
+                            Username = review.User.Username,
+                            Avatar = review.User.Avatar
+                        }
+                    });
+                }
+            }
+
+            return new MovieDetailsDto()
+            {
+                Id = movie.Id,
+                Name = movie.Name,
+                Poster = movie.Poster,
+                Year = movie.Year,
+                Country = movie.Country,
+                Genres = genres,
+                Reviews = reviews,
+                Time = movie.Time,
+                Tagline = movie.Tagline,
+                Description = movie.Description,
+                Director = movie.Director,
+                Budget = movie.Budget,
+                Fees = movie.Fees,
+                AgeLimit = movie.AgeLimit
             };
         }
     }

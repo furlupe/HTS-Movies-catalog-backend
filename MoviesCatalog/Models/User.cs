@@ -14,5 +14,7 @@ namespace MoviesCatalog.Models
         public string Password { get; set; }
         public Gender Gender { get; set; }
         public string? Avatar { get; set; }
+        public IEnumerable<Review> Reviews { get; set; }
+        public IEnumerable<Movie> Favorites { get; set; }
     }
 }
