@@ -8,7 +8,7 @@
         public int Year { get; set; }
         public string? Country { get; set; }
         public IEnumerable<GenreDto> Genres { get; set; }
-        public IEnumerable<ReviewShortDto> Reviews { get; set; }
+        public IEnumerable<ReviewShortDto>? Reviews { get; set; }
 
     }
 }

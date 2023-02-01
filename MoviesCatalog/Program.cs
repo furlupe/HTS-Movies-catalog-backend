@@ -49,6 +49,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddTransient<IAuthorizationHandler, ExtendedAuthRequirementHandler>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IMovieService, MovieService>();
+builder.Services.AddTransient<IFavoritesService, FavoritesService>();
 
 builder.Services.AddAuthorization(options =>
 {
