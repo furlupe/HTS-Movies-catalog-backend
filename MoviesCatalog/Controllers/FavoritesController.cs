@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MoviesCatalog.Models.DTO;
@@ -29,12 +28,40 @@ namespace MoviesCatalog.Controllers
 
         [HttpPost("{id}/add")]
         [Authorize(Policy = "NotBlacklisted")]
-        public async Task AddFavoriteMovie([BindRequired] Guid id)
+        public async Task<IActionResult> AddFavoriteMovie([BindRequired] Guid id)
         {
-            await _favoritesService.AddFavoriteMovie(
-                JwtParser.GetId(Request.Headers.Authorization), 
+            try
+            {
+                await _favoritesService.AddFavoriteMovie(
+                JwtParser.GetId(Request.Headers.Authorization),
                 id
                 );
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}/delete")]
+        [Authorize(Policy = "NotBlacklisted")]
+        public async Task<IActionResult> RemoveFavoriteMovie([BindRequired] Guid id)
+        {
+            try
+            {
+                await _favoritesService.RemoveFavoriteMovie(
+                    JwtParser.GetId(Request.Headers.Authorization),
+                    id
+                );
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            return Ok();
         }
     }
 }

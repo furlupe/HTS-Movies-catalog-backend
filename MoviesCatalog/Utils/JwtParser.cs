@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 
 namespace MoviesCatalog.Utils

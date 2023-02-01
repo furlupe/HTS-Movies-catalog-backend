@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using MoviesCatalog.Exceptions;
 using MoviesCatalog.Models.DTO;
 using MoviesCatalog.Services;
 using System.ComponentModel.DataAnnotations;
@@ -24,7 +23,7 @@ namespace MoviesCatalog.Controllers
             {
                 return await _movieService.GetMoviesPage(page);
             }
-            catch (BadRequestException e)
+            catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
             }
@@ -37,7 +36,7 @@ namespace MoviesCatalog.Controllers
             {
                 return await _movieService.GetMovieDetails(id);
             }
-            catch (BadRequestException e)
+            catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
             }

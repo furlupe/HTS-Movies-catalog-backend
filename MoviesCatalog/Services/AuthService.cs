@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using MoviesCatalog.Exceptions;
 using MoviesCatalog.Models;
 using MoviesCatalog.Models.DTO;
 using MoviesCatalog.Utils;
@@ -25,7 +24,7 @@ namespace MoviesCatalog.Services
             ClaimsIdentity? identity = await GetIdentity(credentials.Email, credentials.Password);
             if (identity is null)
             {
-                throw new BadRequestException("Invalid Email or password");
+                throw new BadHttpRequestException("Invalid Email or password");
             }
 
             var now = DateTime.UtcNow;
@@ -59,11 +58,11 @@ namespace MoviesCatalog.Services
         {
             if (await _context.Users.AnyAsync(x => x.Email == user.Email))
             {
-                throw new BadRequestException("Email is already taken");
+                throw new BadHttpRequestException("Email is already taken");
             }
             else if (await _context.Users.AnyAsync(x => x.Email == user.Username))
             {
-                throw new BadRequestException("Username is already taken");
+                throw new BadHttpRequestException("Username is already taken");
             }
 
             await _context.Users.AddAsync(new User

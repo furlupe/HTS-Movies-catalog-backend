@@ -20,6 +20,11 @@ namespace MoviesCatalog.Services
             var movie = await _context.Movies
                 .SingleOrDefaultAsync(m => m.Id == movieId);
 
+            if (movie is null)
+            {
+                throw new BadHttpRequestException($"Film w/ id = {movieId} does not exist");
+            }
+
             user.Favorites.Add(movie);
             await _context.SaveChangesAsync();
         }
@@ -31,17 +36,18 @@ namespace MoviesCatalog.Services
                 .Include(u => u.Favorites)
                 .SingleOrDefaultAsync(u => u.Id == userId);
 
-            if(selectedMovies.Favorites is null) {
-                return new FavoriteMoviesDto() 
-                { 
+            if (selectedMovies.Favorites is null)
+            {
+                return new FavoriteMoviesDto()
+                {
                     Movies = movies
                 };
             }
 
-            foreach(var movie in selectedMovies.Favorites)
+            foreach (var movie in selectedMovies.Favorites)
             {
                 var genres = new List<GenreDto>();
-                if(movie.Genres is not null)
+                if (movie.Genres is not null)
                 {
                     foreach (var genre in movie.Genres)
                     {
@@ -54,9 +60,9 @@ namespace MoviesCatalog.Services
                 }
 
                 var reviews = new List<ReviewShortDto>();
-                if(movie.Reviews is not null)
+                if (movie.Reviews is not null)
                 {
-                    foreach(var review in movie.Reviews)
+                    foreach (var review in movie.Reviews)
                     {
                         reviews.Add(new ReviewShortDto()
                         {
@@ -77,16 +83,27 @@ namespace MoviesCatalog.Services
                     Reviews = reviews
                 });
             }
-            
+
             return new FavoriteMoviesDto()
             {
                 Movies = movies
             };
         }
 
-        public Task RemoveFavoriteMovie(Guid userId, Guid movieId)
+        public async Task RemoveFavoriteMovie(Guid userId, Guid movieId)
         {
-            throw new NotImplementedException();
+            var user = await _context.Users
+                .Include(u => u.Favorites)
+                .SingleOrDefaultAsync(u => u.Id == userId);
+
+            var movie = user.Favorites.SingleOrDefault(m => m.Id == movieId);
+            if (movie is null)
+            {
+                throw new BadHttpRequestException($"Film w/ id = {movieId} is not favorite");
+            }
+
+            user.Favorites.Remove(movie);
+            await _context.SaveChangesAsync();
         }
     }
 }

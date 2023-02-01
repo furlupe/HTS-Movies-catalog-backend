@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesCatalog.Exceptions;
 using MoviesCatalog.Models.DTO;
 using MoviesCatalog.Services;
 using MoviesCatalog.Utils;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Headers;
 
 namespace MoviesCatalog.Controllers
 {
@@ -45,15 +42,15 @@ namespace MoviesCatalog.Controllers
             try
             {
                 await _userService.UpdateProfile(
-                    profile, 
+                    profile,
                     JwtParser.GetId(Request.Headers.Authorization)
                     );
             }
-            catch (BadRequestException e)
+            catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
             }
-            catch (ForbiddenException)
+            catch
             {
                 return Forbid();
             }

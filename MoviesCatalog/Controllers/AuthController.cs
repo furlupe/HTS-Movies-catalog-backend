@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesCatalog.Exceptions;
 using MoviesCatalog.Models.DTO;
 using MoviesCatalog.Services;
 
@@ -24,7 +23,7 @@ namespace MoviesCatalog.Controllers
                 await _authService.Register(user);
                 return await _authService.Token(new UserLoginCredentials { Email = user.Email, Password = user.Password });
             }
-            catch (BadRequestException e)
+            catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
             }
@@ -37,7 +36,7 @@ namespace MoviesCatalog.Controllers
             {
                 return await _authService.Token(credentials);
             }
-            catch (BadRequestException e)
+            catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
             }
