@@ -1,7 +1,10 @@
-﻿namespace MoviesCatalog.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MoviesCatalog.Models
 {
     public class Review
     {
+        [Key]
         public Guid Id { get; set; }
         public User User { get; set; }
         public Guid UserId { get; set; }

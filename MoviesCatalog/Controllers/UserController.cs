@@ -44,10 +44,10 @@ namespace MoviesCatalog.Controllers
             }
             catch (BadHttpRequestException e)
             {
-                return BadRequest(e.Message);
-            }
-            catch (ForbiddenException)
-            {
+                if(e.StatusCode == StatusCodes.Status400BadRequest)
+                {
+                    return BadRequest(e.Message);
+                }
                 return Forbid();
             }
 
