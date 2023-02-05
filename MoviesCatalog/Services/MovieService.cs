@@ -95,13 +95,16 @@ namespace MoviesCatalog.Services
             }
 
             var genres = new List<GenreDto>();
-            foreach (var genre in movie.Genres)
+            if(movie.Genres is not null)
             {
-                genres.Add(new GenreDto()
+                foreach (var genre in movie.Genres)
                 {
-                    Id = genre.Id,
-                    Name = genre.Name
-                });
+                    genres.Add(new GenreDto()
+                    {
+                        Id = genre.Id,
+                        Name = genre.Name
+                    });
+                }
             }
 
             var reviews = new List<ReviewDto>();

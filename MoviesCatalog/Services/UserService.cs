@@ -30,7 +30,7 @@ namespace MoviesCatalog.Services
         {
             if (profile.Id != id)
             {
-                throw new Exception();
+                throw new BadHttpRequestException("", StatusCodes.Status403Forbidden);
             }
             else if (await _context.Users.AnyAsync(user => user.Email == profile.Email && user.Id != profile.Id))
             {
