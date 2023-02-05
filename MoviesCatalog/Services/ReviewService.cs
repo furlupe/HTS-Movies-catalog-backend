@@ -33,11 +33,6 @@ namespace MoviesCatalog.Services
 
             await _context.Reviews.AddAsync(newReview);
             await _context.SaveChangesAsync();
-
-            user.Reviews.Append(newReview);
-            movie.Reviews.Append(newReview);
-
-            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateReview(Guid userId, Guid reviewId, NewReviewDto review)
