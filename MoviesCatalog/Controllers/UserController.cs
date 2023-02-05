@@ -43,7 +43,7 @@ namespace MoviesCatalog.Controllers
             {
                 await _userService.UpdateProfile(profile, AccessId());
             }
-            catch (BadRequestException e)
+            catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
             }

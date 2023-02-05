@@ -35,11 +35,11 @@ namespace MoviesCatalog.Services
             }
             else if (await _context.Users.AnyAsync(user => user.Email == profile.Email && user.Id != profile.Id))
             {
-                throw new BadRequestException("Email is already taken");
+                throw new BadHttpRequestException("Email is already taken");
             }
             else if (await _context.Users.AnyAsync(user => user.Username == profile.Username && user.Id != profile.Id))
             {
-                throw new BadRequestException("Username is already taken");
+                throw new BadHttpRequestException("Username is already taken");
             }
 
             _context.Entry(await _context.Users.SingleAsync(x => x.Id == profile.Id))

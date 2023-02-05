@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MoviesCatalog.Exceptions;
 using MoviesCatalog.Models;
 using MoviesCatalog.Models.DTO;
 
@@ -18,7 +17,7 @@ namespace MoviesCatalog.Services
             var pageCount = (_context.Movies.Count() / PAGE_SIZE) + Convert.ToInt32(_context.Movies.Count() % PAGE_SIZE > 0);
             if (page > pageCount)
             {
-                throw new BadRequestException($"Page No. {page} is greater than amount of pages");
+                throw new BadHttpRequestException($"Page No. {page} is greater than amount of pages");
             }
 
             var selectedMovies = await _context.Movies
@@ -89,7 +88,7 @@ namespace MoviesCatalog.Services
 
             if (movie is null)
             {
-                throw new BadRequestException($"Movie w/ id = {id} does not exist!");
+                throw new BadHttpRequestException($"Movie w/ id = {id} does not exist!");
             }
 
             var genres = new List<GenreDto>();

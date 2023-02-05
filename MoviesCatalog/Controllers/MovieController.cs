@@ -24,7 +24,7 @@ namespace MoviesCatalog.Controllers
             {
                 return await _movieService.GetMoviesPage(page);
             }
-            catch (BadRequestException e)
+            catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
             }
@@ -37,7 +37,7 @@ namespace MoviesCatalog.Controllers
             {
                 return await _movieService.GetMovieDetails(id);
             }
-            catch (BadRequestException e)
+            catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
             }
