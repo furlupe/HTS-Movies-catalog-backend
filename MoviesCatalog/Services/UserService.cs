@@ -30,7 +30,7 @@ namespace MoviesCatalog.Services
         {
             if (profile.Id != id)
             {
-                throw new ForbiddenException();
+                throw new Exception();
             }
             else if (await _context.Users.AnyAsync(user => user.Email == profile.Email && user.Id != profile.Id))
             {

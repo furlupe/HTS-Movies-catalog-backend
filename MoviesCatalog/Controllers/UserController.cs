@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MoviesCatalog.Models.DTO;
 using MoviesCatalog.Services;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Headers;
+using MoviesCatalog.Utils;
 
 namespace MoviesCatalog.Controllers
 {
@@ -25,7 +24,9 @@ namespace MoviesCatalog.Controllers
         [Authorize(Policy = "NotBlacklisted")]
         public async Task<UserProfileDto> Profile()
         {
-            return await _userService.GetProfile(AccessId());
+            return await _userService.GetProfile(
+                JwtParser.GetId(Request.Headers.Authorization)
+                );
         }
 
         /// <summary>
@@ -40,28 +41,21 @@ namespace MoviesCatalog.Controllers
         {
             try
             {
-                await _userService.UpdateProfile(profile, AccessId());
+                await _userService.UpdateProfile(
+                    profile,
+                    JwtParser.GetId(Request.Headers.Authorization)
+                    );
             }
             catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
             }
-            catch (ForbiddenException)
+            catch
             {
                 return Forbid();
             }
 
             return Ok();
-        }
-
-        private Guid AccessId()
-        {
-            var header = AuthenticationHeaderValue.Parse(Request.Headers.Authorization);
-            return new Guid(
-                new JwtSecurityTokenHandler()
-                    .ReadJwtToken(header.Parameter)
-                    .Claims.First(claim => claim.Type == "id").Value
-                );
         }
     }
 }
