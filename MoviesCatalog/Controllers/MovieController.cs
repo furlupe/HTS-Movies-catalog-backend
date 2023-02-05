@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using MoviesCatalog.Exceptions;
 using MoviesCatalog.Models.DTO;
 using MoviesCatalog.Services;
 using System.ComponentModel.DataAnnotations;

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesCatalog.Exceptions;
 using MoviesCatalog.Models.DTO;
 using MoviesCatalog.Services;
 using System.IdentityModel.Tokens.Jwt;

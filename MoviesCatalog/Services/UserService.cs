@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MoviesCatalog.Exceptions;
 using MoviesCatalog.Models;
 using MoviesCatalog.Models.DTO;
 

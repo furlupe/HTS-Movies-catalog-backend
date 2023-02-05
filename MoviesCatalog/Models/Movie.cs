@@ -17,8 +17,8 @@ namespace MoviesCatalog.Models
         public int? Budget { get; set; }
         public int? Fees { get; set; }
         public int AgeLimit { get; set; }
-        public virtual IEnumerable<Review>? Reviews { get; set; }
-        public virtual IEnumerable<Genre> Genres { get; set; }
-        public virtual IEnumerable<User> InFavoritesOfUsers { get; set; }
+        public virtual ICollection<Review>? Reviews { get; set; }
+        public virtual ICollection<Genre> Genres { get; set; }
+        public virtual ICollection<User> InFavoritesOfUsers { get; set; }
     }
 }

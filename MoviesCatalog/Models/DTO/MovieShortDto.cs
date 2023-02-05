@@ -7,8 +7,8 @@
         public string? Poster { get; set; }
         public int Year { get; set; }
         public string? Country { get; set; }
-        public IEnumerable<GenreDto> Genres { get; set; }
-        public IEnumerable<ReviewShortDto> Reviews { get; set; }
+        public ICollection<GenreDto> Genres { get; set; }
+        public ICollection<ReviewShortDto> Reviews { get; set; }
 
     }
 }
